@@ -1,4 +1,4 @@
-# 🌤️ Enhanced Weather App
+# 🌤️  Weather App
 
 **A stunning weather application that brings weather information to life with smooth typing animations and dynamic background transitions that change based on real-time weather conditions.**
 
@@ -68,6 +68,10 @@
 3. **Watch the Magic**: Enjoy the smooth background transition and typing animations
 4. **View Results**: See temperature, conditions, and wind speed with beautiful effects
 
+## 🚀 Live Preview
+
+[Weather App]( https://haseebjaved4212.github.io/Weather-App/)
+
 ### 🎆 **Animation Experience**
 
 - 📍 **Location** appears first with typing effect
@@ -84,9 +88,7 @@
 - **Singapore** - Experience thunderstorm backgrounds with dramatic effects
 - **Reykjavik** - See foggy atmospheres with mysterious transitions
 
-## 🚀 Live Preview
 
-[Weather App]()
 
 ### 🎭 **Visual Effects by Weather Type**:
 
