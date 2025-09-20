@@ -1,9 +1,53 @@
+// Global variables for background management
+let currentBackgroundTimeout = null;
+let currentWeatherBackground = null;
+let isWeatherDisplayed = false;
+
 // Handle Enter key press in input field
 function handleKeyPress(event) {
   if (event.key === "Enter") {
     getWeather();
   }
 }
+
+// Monitor input field changes
+function setupInputMonitoring() {
+  const cityInput = document.getElementById("city");
+
+  cityInput.addEventListener("input", function () {
+    const city = this.value.trim();
+
+    // If input is cleared and weather was displayed
+    if (!city && isWeatherDisplayed) {
+      // Clear weather display immediately
+      const resultBox = document.getElementById("weatherResult");
+      resultBox.innerHTML = "";
+
+      // Reset to default background after a delay
+      if (currentBackgroundTimeout) {
+        clearTimeout(currentBackgroundTimeout);
+      }
+
+      currentBackgroundTimeout = setTimeout(() => {
+        resetToDefaultBackground();
+        isWeatherDisplayed = false;
+        currentWeatherBackground = null;
+      }, 1000); // 1 second delay
+    }
+  });
+}
+
+// Reset to default background
+function resetToDefaultBackground() {
+  const defaultBackground =
+    "https://images.unsplash.com/photo-1710761819460-0c3a06821a2b?w=1920&auto=format&fit=crop&q=80";
+  setBackgroundSmooth(defaultBackground);
+}
+
+// Initialize input monitoring when page loads
+window.addEventListener("DOMContentLoaded", function () {
+  setupInputMonitoring();
+});
 
 // Typing animation function
 function typeWriter(element, text, speed = 50) {
@@ -30,9 +74,20 @@ function typeWriter(element, text, speed = 50) {
   });
 }
 
-// Smooth background transition function
+// Smooth background transition function with persistence
 function setBackgroundSmooth(imageUrl) {
   const overlay = document.getElementById("backgroundOverlay");
+
+  // Don't change if it's the same background
+  if (currentWeatherBackground === imageUrl) {
+    return;
+  }
+
+  // Clear any pending background changes
+  if (currentBackgroundTimeout) {
+    clearTimeout(currentBackgroundTimeout);
+    currentBackgroundTimeout = null;
+  }
 
   // Preload the image
   const img = new Image();
@@ -49,6 +104,9 @@ function setBackgroundSmooth(imageUrl) {
       // Update the body background for fallback
       document.body.style.backgroundImage = `url(${imageUrl})`;
     }, 1500);
+
+    // Update current background tracking
+    currentWeatherBackground = imageUrl;
   };
 
   img.src = imageUrl;
@@ -109,6 +167,12 @@ async function getWeather() {
     return;
   }
 
+  // Clear any pending background reset
+  if (currentBackgroundTimeout) {
+    clearTimeout(currentBackgroundTimeout);
+    currentBackgroundTimeout = null;
+  }
+
   // Show loading state
   button.innerHTML = '<div class="loading"></div> Loading...';
   button.disabled = true;
@@ -151,6 +215,7 @@ async function getWeather() {
     // Step 5: Display weather with typing animation
     setTimeout(() => {
       displayWeatherWithAnimation(name, country, temp, conditionText, wind);
+      isWeatherDisplayed = true; // Mark that weather is now displayed
     }, 300);
   } catch (err) {
     console.error(err);
